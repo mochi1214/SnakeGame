@@ -208,7 +208,7 @@ public class Main extends JPanel implements KeyListener {
                 FileWriter myWrite = new FileWriter(myObj.getName());
                 myWrite.write("" + 0);
             } catch (IOException err) {
-                System.out.println("An error occurred");
+                System.out.println("發生未知的錯誤");
                 err.printStackTrace();
             }
         }
