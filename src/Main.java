@@ -193,23 +193,31 @@ public class Main extends JPanel implements KeyListener {
     }
 
     public void read_highest_score() {
-        try {
-            File myObj = new File(myFile);
-            Scanner myReader= new Scanner(myObj);
-            highest_score = myReader.nextInt();
-            myReader.close();
-        } catch (FileNotFoundException e) {
-            highest_score = 0;
+        File myObj = new File(myFile);
+
+        if (!myObj.exists()) {
             try {
-                File myObj = new File(myFile);
                 if (myObj.createNewFile()) {
                     System.out.println("File created: " + myObj.getName());
                 }
-                FileWriter myWrite = new FileWriter(myObj.getName());
-                myWrite.write("" + 0);
-            } catch (IOException err) {
+                try (FileWriter myWriter = new FileWriter(myObj)) {
+                    myWriter.write("" + 0);
+                    highest_score = 0;
+                }
+            } catch (IOException e) {
                 System.out.println("發生未知的錯誤");
-                err.printStackTrace();
+                e.printStackTrace();
+            }
+        } else {
+            try (Scanner myReader = new Scanner(myObj)) {
+                if (myReader.hasNextInt()) {
+                    highest_score = myReader.nextInt();
+                } else {
+                    highest_score = 0;
+                }
+            } catch (FileNotFoundException e) {
+                System.out.println("讀取文件時發生錯誤");
+                e.printStackTrace();
             }
         }
     }
