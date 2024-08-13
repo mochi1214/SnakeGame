@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Main extends JPanel implements KeyListener {
 
@@ -24,7 +26,6 @@ public class Main extends JPanel implements KeyListener {
     public static int row = height / CELL_SIZE;
     // 直列
     public static int column = width / CELL_SIZE;
-    public int testHaha = 10;
     private Snake snake;
     private Fruit fruit;
     private Timer t;
@@ -33,6 +34,8 @@ public class Main extends JPanel implements KeyListener {
     private boolean allowKeyPress;
     private int score;
     private int highest_score;
+
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
 
     String desktop = System.getProperty("user.home") + "/Desktop/";
     String myFile = desktop + "filename.txt";
@@ -82,10 +85,7 @@ public class Main extends JPanel implements KeyListener {
                 int response = JOptionPane.showOptionDialog(this, "最高分數為 ： " + highest_score + "\n你要繼續遊戲嗎？ \n這次分數為： " + score, "Game Over", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, null, JOptionPane.YES_OPTION);
                 write_a_file(score);
                 switch (response) {
-                    case JOptionPane.CANCEL_OPTION:
-                        System.exit(0);
-                        break;
-                    case JOptionPane.NO_OPTION:
+                    case JOptionPane.CANCEL_OPTION, JOptionPane.NO_OPTION:
                         System.exit(0);
                         break;
                     case JOptionPane.YES_OPTION:
@@ -205,8 +205,8 @@ public class Main extends JPanel implements KeyListener {
                     highest_score = 0;
                 }
             } catch (IOException e) {
-                System.out.println("發生未知的錯誤");
-                e.printStackTrace();
+//                e.printStackTrace();
+                logger.log(Level.SEVERE,"發生錯誤：", e);
             }
         } else {
             try (Scanner myReader = new Scanner(myObj)) {
@@ -216,8 +216,8 @@ public class Main extends JPanel implements KeyListener {
                     highest_score = 0;
                 }
             } catch (FileNotFoundException e) {
-                System.out.println("讀取文件時發生錯誤");
-                e.printStackTrace();
+//                e.printStackTrace(); // 不建議使用，直接將錯誤堆疊印到控制台，佔記憶體空間，且訊息不完整
+                logger.log(Level.SEVERE,"發生錯誤：", e);
             }
         }
     }
@@ -233,7 +233,8 @@ public class Main extends JPanel implements KeyListener {
             }
             myWriter.close();
         } catch (IOException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
+            logger.log(Level.SEVERE,"發生錯誤：", e);
         }
     }
 }
